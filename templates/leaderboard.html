@@ -1,0 +1,16 @@
+{% extends "home.html" %}
+{% block leaderboard %}
+  <h3>Leaderboard</h3>
+  <div class='row'>
+    <div class="col-md-6 col-xs-7">Name</div>
+    <div class="col-md-2 col-xs-2">Record</div>
+    <div class="col-md-2 col-xs-3">Rating</div>
+  </div>
+  {% for player in players %}
+    <div class='row'>
+      <div class="col-md-6 col-xs-7">{{ player.name }}</div>
+      <div class="col-md-2 col-xs-2">{{ player.wins }}-{{ player.losses }}</div>
+      <div class="col-md-2 col-xs-3">{{ player.rating }}</div>
+    </div>
+  {% endfor %}
+{% endblock %}
