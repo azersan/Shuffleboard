@@ -87,7 +87,35 @@ def get_leaderboard():
 
 @app.route('/games', methods=['POST'])
 def record_game():
-    return get_leaderboard();
+    update_stats(request)
+    return get_leaderboard()
+
+
+def update_stats(request):
+    results = {}
+    results[int(request.form['redPlayer1'])] = {'my_score' : request.form['redScore'], 'their_score' : request.form['blueScore']}
+    results[int(request.form['redPlayer2'])] = {'my_score' : request.form['redScore'], 'their_score' : request.form['blueScore']}
+    results[int(request.form['bluePlayer1'])] = {'my_score' : request.form['blueScore'], 'their_score' : request.form['redScore']}
+    results[int(request.form['bluePlayer2'])] = {'my_score' : request.form['blueScore'], 'their_score' : request.form['redScore']}
+    app.logger.debug('Results: %s', results)
+    db = get_db()
+    cur = db.execute('select id, name, wins, losses, rating from players order by rating desc')
+    players = cur.fetchall()
+
+    for player in players:
+        app.logger.debug("Player: %s", player[0])
+        if player[0] in results:
+            more_wins = 0
+            more_losses = 0
+            if results[player[0]]['my_score'] > results[player[0]]['their_score']:
+                more_wins = 1
+            else:
+                more_losses = 1
+            app.logger.debug('updating player %s', player[1])
+            db.execute('update players set wins=?, losses=? where id=?',
+                [player[2] + more_wins, player[3] + more_losses, player[0]])
+            db.commit()
+    return
 
 """
 @app.route('/')

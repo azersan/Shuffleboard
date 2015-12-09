@@ -3,41 +3,63 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap-theme.css') }}">
+<script src="{{ url_for('static', filename='js/jquery-1.11.3.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 <div class="page container-fluid">
   <div class="row">
     <h2 class="col-md-6 col-sm-12"> Shuffleboard Rankings</h1>
-    <hr />
-    <div class="col-md-6">
-      <form action="{{ url_for('manage_players')}}" method="post" class="add-player form-horizontal">
-        <div class="form-group">
-          <label class="sr-only" for="newPlayerName">Name</label>
-          <div class="col-xs-8">
-            <input type="text" class="form-control" size="30" id="newPlayerName" name="name" placeholder="A new challenger approaches"/>
-          </div>
-          <div class="col-xs-4">
-            <input type="submit" class="btn btn-default" value="Add Player" />
-          </div>
-        </div>
-      </form>
-    </div>
   </div>
-
   <hr />
-
   <div>
     <form action="{{ url_for('record_game')}}" method="post" class="form-horizontal">
-      <h3>Red Team</h3>
       <div class="form-group">
-        <div class="col-xs-8">
+        <label class="h4 control-label col-xs-4" for="redScore">Red Score</label>
+        <div class="col-xs-2">
+            <input type="text" class="form-control" id="redScore" name="redScore"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-xs-6">
           <select class="form-control" name="redPlayer1" required>
             {% for player in players %}
               <option value="{{player.id}}">{{ player.name }}</option>
             {% endfor %}
           </select>
-          <input type="text" class="form-control" size="30" id="redPlayer1Name" name="name" placeholder="A new challenger approaches"/>
+        </div>
+          <div class="col-xs-6">
+            <select class="form-control" name="redPlayer2" required>
+              {% for player in players %}
+                <option value="{{player.id}}">{{ player.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+      </div>
+
+
+
+      <div class="form-group">
+        <label class="h4 control-label col-xs-4" for="blueScore">Blue Score</label>
+        <div class="col-xs-2">
+            <input type="text" class="form-control" id="blueScore" name="blueScore"/>
         </div>
       </div>
+      <div class="form-group">
+        <div class="col-xs-6">
+          <select class="form-control" name="bluePlayer1" required>
+            {% for player in players %}
+              <option value="{{player.id}}">{{ player.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+          <div class="col-xs-6">
+            <select class="form-control" name="bluePlayer2" required>
+              {% for player in players %}
+                <option value="{{player.id}}">{{ player.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+      </div>
+      <input type="submit" class="btn btn-default" value="Lock it in!" />
     </form>
   </div>
 
@@ -55,4 +77,24 @@
       <div class="col-md-2 col-xs-3">{{ player.rating }}</div>
     </div>
   {% endfor %}
+
+
+
+  <hr />
+
+  <div class="row">
+    <div class="col-md-6">
+      <form action="{{ url_for('manage_players')}}" method="post" class="add-player form-horizontal">
+        <div class="form-group">
+          <label class="sr-only" for="newPlayerName">Name</label>
+          <div class="col-xs-8">
+            <input type="text" class="form-control" size="30" id="newPlayerName" name="name" placeholder="A new challenger approaches"/>
+          </div>
+          <div class="col-xs-4">
+            <input type="submit" class="btn btn-default" value="Add Player" />
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
