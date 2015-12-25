@@ -1,0 +1,1 @@
+web: gunicorn shuffle_server:app --log-file=-
