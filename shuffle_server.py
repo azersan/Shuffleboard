@@ -22,6 +22,7 @@ mysql = MySQL()
 
 # Load default config and override config from an environment variable
 app.config.update(dict(
+    DEBUG = True,
     MYSQL_USER = url.username,
     MYSQL_PASSWORD = url.password,
     MYSQL_DB = url.path[1:],
@@ -81,22 +82,30 @@ def record_game():
     return redirect(url_for('get_main_page'))
 
 def update_stats(request):
+    update_stats_for_game(request.form['redPlayer1'],
+                          request.form['redPlayer2'],
+                          request.form['bluePlayer1'],
+                          request.form['bluePlayer2'],
+                          request.form['redScore'],
+                          request.form['blueScore'])
+
+def update_stats_for_game(redPlayer1, redPlayer2, bluePlayer1, bluePlayer2, redScore, blueScore):
     db = get_db()
     cur = db.cursor()
     cur.execute('select id, name, wins, losses, rating from players order by rating desc')
     players = cur.fetchall()
 
     results = {}
-    results[int(request.form['redPlayer1'])] = {'my_score' : request.form['redScore'], 'their_score' : request.form['blueScore']}
-    results[int(request.form['redPlayer2'])] = {'my_score' : request.form['redScore'], 'their_score' : request.form['blueScore']}
-    results[int(request.form['bluePlayer1'])] = {'my_score' : request.form['blueScore'], 'their_score' : request.form['redScore']}
-    results[int(request.form['bluePlayer2'])] = {'my_score' : request.form['blueScore'], 'their_score' : request.form['redScore']}
+    results[int(redPlayer1)] = {'my_score' : redScore, 'their_score' : blueScore}
+    results[int(redPlayer2)] = {'my_score' : redScore, 'their_score' : blueScore}
+    results[int(bluePlayer1)] = {'my_score' : blueScore, 'their_score' : redScore}
+    results[int(bluePlayer2)] = {'my_score' : blueScore, 'their_score' : redScore}
 
     for player in players:
         if player[0] in results:
             more_wins = 0
             more_losses = 0
-            if results[player[0]]['my_score'] > results[player[0]]['their_score']:
+            if int(results[player[0]]['my_score']) > int(results[player[0]]['their_score']):
                 more_wins = 1
             else:
                 more_losses = 1
@@ -104,6 +113,25 @@ def update_stats(request):
                 [player[2] + more_wins, player[3] + more_losses, player[0]])
             db.commit()
     return
+
+@app.route('/reload_stats', methods=['POST'])
+def reload_status():
+    app.logger.info('Reloading stats for all players')
+    reset_stats()
+    process_all_games()
+    return redirect(url_for('get_main_page'))
+
+def reset_stats():
+    get_db().cursor().execute('update players set wins=0, losses=0, rating=1500')
+    get_db().commit()
+
+def process_all_games():
+    cur = get_db().cursor()
+    cur.execute('select red_player_one, red_player_two, blue_player_one, blue_player_two, red_score, blue_score, id from games order by time_entered asc')
+    games = cur.fetchall()
+    for game in games:
+        app.logger.info('Processing game %s', game[6])
+        update_stats_for_game(game[0], game[1], game[2], game[3], game[4], game[5])
 
 if __name__ == "__main__":
     app.run()
