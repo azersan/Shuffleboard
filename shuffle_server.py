@@ -71,10 +71,10 @@ def record_game():
     db = get_db()
     db.cursor().execute('insert into games (time_entered, red_player_one, red_player_two, blue_player_one, blue_player_two, red_score, blue_score) values (%s, %s, %s, %s, %s, %s, %s)',
         [int(round(time.time() * 1000)),
-        request.form['redPlayer1'],
-        request.form['redPlayer2'],
-        request.form['bluePlayer1'],
-        request.form['bluePlayer2'],
+        request.form['redPlayer1'] or None,
+        request.form['redPlayer2'] or None,
+        request.form['bluePlayer1'] or None,
+        request.form['bluePlayer2'] or None,
         request.form['redScore'],
         request.form['blueScore']])
     db.commit()
@@ -82,10 +82,10 @@ def record_game():
     return redirect(url_for('get_main_page'))
 
 def update_stats(request):
-    update_stats_for_game(request.form['redPlayer1'],
-                          request.form['redPlayer2'],
-                          request.form['bluePlayer1'],
-                          request.form['bluePlayer2'],
+    update_stats_for_game(request.form['redPlayer1'] or None,
+                          request.form['redPlayer2'] or None,
+                          request.form['bluePlayer1'] or None,
+                          request.form['bluePlayer2'] or None,
                           request.form['redScore'],
                           request.form['blueScore'])
 

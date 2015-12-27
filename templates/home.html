@@ -21,6 +21,7 @@
       <div class="form-group">
         <div class="col-xs-6">
           <select class="form-control" name="redPlayer1" required>
+            <option value="">--</option>
             {% for player in players %}
               <option value="{{player[0]}}">{{ player[1] }}</option>
             {% endfor %}
@@ -28,6 +29,7 @@
         </div>
           <div class="col-xs-6">
             <select class="form-control" name="redPlayer2" required>
+              <option value="">--</option>
               {% for player in players %}
                 <option value="{{player[0]}}">{{ player[1] }}</option>
               {% endfor %}
@@ -46,6 +48,7 @@
       <div class="form-group">
         <div class="col-xs-6">
           <select class="form-control" name="bluePlayer1" required>
+            <option value="">--</option>
             {% for player in players %}
               <option value="{{player[0]}}">{{ player[1] }}</option>
             {% endfor %}
@@ -53,6 +56,7 @@
         </div>
           <div class="col-xs-6">
             <select class="form-control" name="bluePlayer2" required>
+              <option value="">--</option>
               {% for player in players %}
                 <option value="{{player[0]}}">{{ player[1] }}</option>
               {% endfor %}
